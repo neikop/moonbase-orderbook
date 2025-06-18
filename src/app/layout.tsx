@@ -1,8 +1,6 @@
 import type { Metadata } from "next"
 
-import { ChakraProvider } from "@chakra-ui/react"
-import { chakraSystem } from "components/ui/theme"
-import { Toaster } from "components/ui/toaster"
+import { AppProvider } from "components/app"
 import { Geist, Geist_Mono } from "next/font/google"
 
 import "./globals.css"
@@ -30,10 +28,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <ChakraProvider value={chakraSystem}>
-          <Toaster />
-          {children}
-        </ChakraProvider>
+        <AppProvider>{children}</AppProvider>
       </body>
     </html>
   )

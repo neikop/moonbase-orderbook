@@ -1,10 +1,20 @@
 "use client"
-import { Button, Container, HStack } from "@chakra-ui/react"
+import { Button, HStack } from "@chakra-ui/react"
+import { useQuery } from "@tanstack/react-query"
+import { AppLayout } from "components/app"
 import { toaster } from "components/ui/toaster"
+import { bsxService } from "services"
 
-export default function Home() {
+const Home = () => {
+  const { data: products } = useQuery({
+    queryFn: () => bsxService.fetchProducts(),
+    queryKey: ["bsxService.fetchProducts"],
+  })
+
+  console.log(products)
+
   return (
-    <Container py={10}>
+    <AppLayout>
       <HStack>
         <Button
           onClick={() => {
@@ -19,6 +29,8 @@ export default function Home() {
         </Button>
         <Button disabled>Disabled</Button>
       </HStack>
-    </Container>
+    </AppLayout>
   )
 }
+
+export default Home
