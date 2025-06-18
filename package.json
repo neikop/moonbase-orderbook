@@ -6,9 +6,13 @@
     "dev": "next dev --turbopack -p 3020",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "npm run chakra-typegen",
+    "chakra-typegen": "npx @chakra-ui/cli typegen ./src/components/ui/theme.ts"
   },
   "dependencies": {
+    "@chakra-ui/react": "^3.21.0",
+    "@emotion/react": "^11.14.0",
     "next": "15.3.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -21,12 +25,12 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9.21.0",
+    "eslint-config-next": "15.3.3",
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-perfectionist": "^4.10.1",
     "eslint-plugin-prettier": "^5.2.3",
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
-    "eslint-config-next": "15.3.3",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
