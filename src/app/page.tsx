@@ -1,35 +1,67 @@
 "use client"
-import { Button, HStack } from "@chakra-ui/react"
-import { useQuery } from "@tanstack/react-query"
-import { AppLayout } from "components/app"
-import { toaster } from "components/ui/toaster"
-import { bsxService } from "services"
+import { Box, Grid, HStack, Stack, StackSeparator, Text } from "@chakra-ui/react"
+import { Orderbook } from "components/Orderbook"
+import { ProductInfo } from "components/ProductInfo"
+import { ProductSelectDialog } from "components/ProductSelectDialog"
+import { useProductStore } from "store/productStore"
 
 const Home = () => {
-  const { data: products } = useQuery({
-    queryFn: () => bsxService.fetchProducts(),
-    queryKey: ["bsxService.fetchProducts"],
-  })
-
-  console.log(products)
+  const { product, setProduct } = useProductStore()
 
   return (
-    <AppLayout>
-      <HStack>
-        <Button
-          onClick={() => {
-            toaster.create({
-              description: "Your transaction was successfully sent",
-              title: "Success",
-              type: "success",
-            })
+    <Stack flex={1} gap={0} separator={<StackSeparator />}>
+      <HStack alignItems="stretch" flexWrap="wrap" gap={0} w="full">
+        <ProductSelectDialog
+          buttonProps={{
+            borderColor: "border",
+            h: 14,
+            justifyContent: "flex-start",
+            md: { borderRightWidth: 1 },
+            mdDown: { borderBottomWidth: 1, w: "full" },
+            minW: 240,
+            rounded: "none",
+            size: "xl",
           }}
-        >
-          Click me
-        </Button>
-        <Button disabled>Disabled</Button>
+          onChange={setProduct}
+          value={product}
+        />
+
+        <ProductInfo product={product} />
       </HStack>
-    </AppLayout>
+
+      <Grid
+        flex={1}
+        md={{
+          gridTemplateAreas: `"trading-view orderbook trade-box"
+                              "history-card history-card trade-box"`,
+          gridTemplateColumns: "1fr 320px 360px",
+          gridTemplateRows: "1fr 240px",
+        }}
+        mdDown={{
+          display: "flex",
+        }}
+      >
+        <Box backgroundColor="red.50" borderRightWidth={1} gridArea="trading-view" mdDown={{ display: "none" }}>
+          <Box p={1}>
+            <Text color="textSecondary">Trading View</Text>
+          </Box>
+        </Box>
+        <Box gridArea="orderbook" p={1}>
+          <Orderbook />
+        </Box>
+        <Box backgroundColor="green.50" borderLeftWidth={1} gridArea="trade-box" mdDown={{ display: "none" }}>
+          <Box p={1}>
+            <Text color="textSecondary">Trade Box</Text>
+          </Box>
+        </Box>
+        <Box backgroundColor="blue.50" borderTopWidth={1} gridArea="history-card" mdDown={{ display: "none" }}>
+          <Box p={1}>
+            <Text color="textSecondary">History Card</Text>
+          </Box>
+        </Box>
+      </Grid>
+      <Box />
+    </Stack>
   )
 }
 
