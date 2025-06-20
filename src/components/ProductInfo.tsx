@@ -15,7 +15,7 @@ const ProductInfo = ({ product }: Props) => {
         </Text>
       </Center>
       <HStack gap={0} overflowX="auto">
-        <Box px={3} py={2}>
+        <Box px={3} py={2} textAlign="center">
           <Text color="textSecondary" fontSize="xs">
             Mark Price
           </Text>
@@ -23,7 +23,7 @@ const ProductInfo = ({ product }: Props) => {
             {formatPrice(product?.mark_price)}
           </Text>
         </Box>
-        <Box px={3} py={2}>
+        <Box px={3} py={2} textAlign="center">
           <Text color="textSecondary" fontSize="xs">
             Index Price
           </Text>

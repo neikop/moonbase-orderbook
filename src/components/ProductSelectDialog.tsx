@@ -1,23 +1,12 @@
-import {
-  Box,
-  Button,
-  ButtonProps,
-  CloseButton,
-  Dialog,
-  Flex,
-  Input,
-  Portal,
-  Stack,
-  Text,
-  useDialog,
-} from "@chakra-ui/react"
-import { useQuery } from "@tanstack/react-query"
+"use client"
+import { Box, Button, ButtonProps, Dialog, Flex, Input, Portal, Stack, Text, useDialog } from "@chakra-ui/react"
 import { useDebounce } from "@uidotdev/usehooks"
 import { ProductImage } from "components/ProductImage"
 import { useProducts } from "hooks/useProducts"
+import dynamic from "next/dynamic"
 import { useEffect, useMemo, useState } from "react"
-import { MdExpandMore } from "react-icons/md"
-import { bsxService } from "services"
+
+const MdExpandMore = dynamic(() => import("react-icons/md").then((mod) => mod.MdExpandMore), { ssr: false })
 
 type Props = {
   buttonProps?: ButtonProps
@@ -65,7 +54,7 @@ const ProductSelectDialog = ({ buttonProps, onChange, value }: Props) => {
             "Select Product"
           )}
           <Flex flex={1} justifyContent="flex-end">
-            <MdExpandMore className="!h-6 !w-6" size={6} />
+            <MdExpandMore className="!h-6 !w-6" />
           </Flex>
         </Button>
       </Dialog.Trigger>
