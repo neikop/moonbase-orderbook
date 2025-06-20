@@ -13,13 +13,13 @@ const Orderbook = () => {
     const mimAsk = data.asks.slice(-1)[0]
     const maxBid = data.bids[0]
     return {
-      gap: mimAsk[0] - maxBid[0],
-      price: (mimAsk[0] + maxBid[0]) / 2,
+      gap: mimAsk.price - maxBid.price,
+      price: (mimAsk.price + maxBid.price) / 2,
     }
   }, [data])
 
-  const cumulativeAskSize = data.asks[0][2]
-  const cumulativeBidSize = data.bids.slice(-1)[0][2]
+  const cumulativeAskSize = data.asks[0].cumulativeSize
+  const cumulativeBidSize = data.bids.slice(-1)[0].cumulativeSize
 
   return (
     <Stack gap={1}>
@@ -42,19 +42,17 @@ const Orderbook = () => {
         </HStack>
       </HStack>
       <Stack gap={0.5}>
-        <Stack gap={0.5}>
-          {data.asks.map(([price, size, cumulative], index) => {
+        <Stack gap={0.5} overflowY="hidden">
+          {data.asks.map((item, index) => {
             return (
               <OrderItem
-                cumulativeSize={cumulative}
                 isAsk={true}
                 isLoading={isLoading}
                 key={index}
                 maxSize={cumulativeAskSize}
-                price={price}
                 priceIncrement={product?.quote_increment}
-                size={size}
                 sizeIncrement={product?.base_increment}
+                {...item}
               />
             )
           })}
@@ -67,19 +65,17 @@ const Orderbook = () => {
           sizeIncrement={product?.quote_increment}
         />
 
-        <Stack gap={1}>
-          {data.bids.map(([price, size, cumulative], index) => {
+        <Stack gap={1} overflowY="hidden">
+          {data.bids.map((item, index) => {
             return (
               <OrderItem
-                cumulativeSize={cumulative}
                 isAsk={false}
                 isLoading={isLoading}
                 key={index}
                 maxSize={cumulativeBidSize}
-                price={price}
                 priceIncrement={product?.quote_increment}
-                size={size}
                 sizeIncrement={product?.base_increment}
+                {...item}
               />
             )
           })}

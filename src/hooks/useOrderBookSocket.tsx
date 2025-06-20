@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react"
 import { useProductStore } from "store/productStore"
 
-type Order = [number, number, number]
+export type Order = {
+  cumulativePrice: number
+  cumulativeSize: number
+  price: number
+  size: number
+}
 
 type OrderBookData = {
   channel: "book"
@@ -91,14 +96,24 @@ const normalizeOrderState = ({ asks, bids }: OrderBookState) => {
   }
 }
 
-const normalizeOrderData = ({ asks, bids }: OrderBookState) => {
+const normalizeOrderData = ({ asks, bids }: OrderBookState): { asks: Order[]; bids: Order[] } => {
   const emptyOrders = Array.from({ length: orderbookSize })
-  const normalizeAsks = emptyOrders
-    .map((_, index) => (asks[index] || [0, 0]).map((value) => +value).concat(0) as Order)
+  const normalizeAsks: Order[] = emptyOrders
+    .map((_, index) => ({
+      cumulativePrice: 0,
+      cumulativeSize: 0,
+      price: Number(asks[index]?.[0] ?? 0),
+      size: Number(asks[index]?.[1] ?? 0),
+    }))
     .map(calculateAccumulate)
 
   const normalizeBids = emptyOrders
-    .map((_, index) => (bids[index] || [0, 0]).map((value) => +value).concat(0) as Order)
+    .map((_, index) => ({
+      cumulativePrice: 0,
+      cumulativeSize: 0,
+      price: Number(bids[index]?.[0] ?? 0),
+      size: Number(bids[index]?.[1] ?? 0),
+    }))
     .map(calculateAccumulate)
 
   return {
@@ -108,10 +123,13 @@ const normalizeOrderData = ({ asks, bids }: OrderBookState) => {
 }
 
 const calculateAccumulate = (item: Order, index: number, array: Order[]): Order => {
+  const currentPrice = array[index].price * array[index].size
   if (index === 0) {
-    item[2] = array[index][1]
+    item.cumulativePrice = currentPrice
+    item.cumulativeSize = array[index].size
   } else {
-    item[2] = array[index - 1][2] + array[index][1]
+    item.cumulativePrice = array[index - 1].cumulativePrice + currentPrice
+    item.cumulativeSize = array[index - 1].cumulativeSize + array[index].size
   }
   return item
 }

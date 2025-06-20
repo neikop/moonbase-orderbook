@@ -1,60 +1,100 @@
 "use client"
-import { Box, Flex, HStack, Show, Text } from "@chakra-ui/react"
-import React from "react"
+import { Box, Flex, HStack, Show, Stack, Text } from "@chakra-ui/react"
+import { Tooltip } from "components/ui/Tooltip"
+import { Order } from "hooks/useOrderBookSocket"
+import React, { useState } from "react"
 import { formatPriceWithIncrement } from "utils/common"
 
 type Props = {
-  cumulativeSize: number
   isAsk: boolean
   isLoading?: boolean
   maxSize: number
-  price: number
   priceIncrement?: string
-  size: number
   sizeIncrement?: string
-}
+} & Order
 
-const OrderItem = React.memo(
-  ({ cumulativeSize, isAsk, maxSize, price, priceIncrement, size, sizeIncrement }: Props) => {
-    return (
-      <HStack h={6} position="relative" pr={2}>
-        <Show when={price > 0}>
-          <Flex h="full" justifyContent="flex-start" position="absolute" w="1/5">
-            <Box
-              className={isAsk ? "bg-[#f04339]/80" : "bg-[#4AD50C]/80"}
-              h="full"
-              left={0}
-              position="absolute"
-              transition="width 0.5s ease-in-out"
-              width={`${(size / maxSize) * 100}%`}
-            />
-          </Flex>
-
+const OrderItem = React.memo((props: Props) => {
+  const { cumulativeSize, isAsk, maxSize, price, priceIncrement, size, sizeIncrement } = props
+  const [isHover, setIsHover] = useState(false)
+  const isActive = price > 0
+  return (
+    <HStack
+      {...(isActive && {
+        cursor: "pointer",
+        onMouseEnter: () => setIsHover(true),
+        onMouseLeave: () => setIsHover(false),
+      })}
+      h={6}
+      position="relative"
+      pr={2}
+    >
+      {isHover && (
+        <Tooltip content={<OrderItemInfo {...props} />} open={isHover} positioning={{ placement: "right-end" }}>
           <Box
-            className={isAsk ? "bg-[#f04339]/10" : "bg-[#4AD50C]/10"}
+            backgroundColor="blackAlpha.100"
+            h={1500}
+            pointerEvents="none"
+            position="absolute"
+            {...(isAsk ? { top: 0 } : { bottom: 0 })}
+            w="full"
+          />
+        </Tooltip>
+      )}
+      <Show when={isActive}>
+        <Flex h="full" justifyContent="flex-start" position="absolute" w="1/5">
+          <Box
+            backgroundColor={isAsk ? "#f04339c0" : "#4AD50Cc0"}
             h="full"
             left={0}
             position="absolute"
             transition="width 0.5s ease-in-out"
-            width={`${(cumulativeSize / maxSize) * 100}%`}
+            width={`${(size / maxSize) * 100}%`}
           />
-        </Show>
-        <Text
-          className={isAsk ? "text-red-500" : "text-green-500"}
-          flex={2}
-          fontFamily="monospace"
-          fontSize="xs"
-          textAlign="center"
-        >
-          {price ? formatPriceWithIncrement(price, priceIncrement) : "-"}
+        </Flex>
+
+        <Box
+          backgroundColor={isAsk ? "#f0433920" : "#4AD50C20"}
+          h="full"
+          left={0}
+          position="absolute"
+          transition="width 0.5s ease-in-out"
+          width={`${(cumulativeSize / maxSize) * 100}%`}
+        />
+      </Show>
+      <Text color={isAsk ? "fg.error" : "fg.success"} flex={2} fontFamily="monospace" fontSize="xs" textAlign="center">
+        {price ? formatPriceWithIncrement(price, priceIncrement) : "-"}
+      </Text>
+      <Text flex={1} fontFamily="monospace" fontSize="xs" textAlign="right">
+        {size ? formatPriceWithIncrement(size, sizeIncrement) : "-"}
+      </Text>
+    </HStack>
+  )
+})
+
+const OrderItemInfo = React.memo((item: Props) => {
+  return (
+    <Stack gap={2} minW={180}>
+      <Flex gap={4} justifyContent="space-between">
+        <Text>Average price</Text>
+        <Text fontWeight="semibold" textAlign="right">
+          {formatPriceWithIncrement(item.cumulativePrice / item.cumulativeSize, item.priceIncrement)}
         </Text>
-        <Text flex={1} fontFamily="monospace" fontSize="xs" textAlign="right">
-          {size ? formatPriceWithIncrement(size, sizeIncrement) : "-"}
+      </Flex>
+      <Flex gap={4} justifyContent="space-between">
+        <Text>Amount</Text>
+        <Text fontWeight="semibold" textAlign="right">
+          {formatPriceWithIncrement(item.cumulativeSize, item.sizeIncrement)}
         </Text>
-      </HStack>
-    )
-  },
-)
+      </Flex>
+      <Flex gap={4} justifyContent="space-between">
+        <Text>Sum</Text>
+        <Text fontWeight="semibold" textAlign="right">
+          {formatPriceWithIncrement(item.cumulativePrice, item.priceIncrement)} USDC
+        </Text>
+      </Flex>
+    </Stack>
+  )
+})
 
 export const OrderItemDummy = React.memo(({ price, priceIncrement, size, sizeIncrement }: Partial<Props>) => {
   return (
