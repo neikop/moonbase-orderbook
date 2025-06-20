@@ -56,7 +56,7 @@ const OrderItem = React.memo(
   },
 )
 
-export const OrderItemDummy = ({ price, priceIncrement, size, sizeIncrement }: Partial<Props>) => {
+export const OrderItemDummy = React.memo(({ price, priceIncrement, size, sizeIncrement }: Partial<Props>) => {
   return (
     <HStack backgroundColor="gray.100" h={6} pr={2}>
       <Text flex={2} fontFamily="monospace" fontSize="xs" textAlign="center">
@@ -67,6 +67,6 @@ export const OrderItemDummy = ({ price, priceIncrement, size, sizeIncrement }: P
       </Text>
     </HStack>
   )
-}
+})
 
 export default OrderItem

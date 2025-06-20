@@ -4,4 +4,8 @@ const bsxClient = create({
   baseURL: "https://api.bsx.exchange",
 })
 
-export { bsxClient }
+const apiClient = create({
+  baseURL: "/",
+})
+
+export { apiClient, bsxClient }

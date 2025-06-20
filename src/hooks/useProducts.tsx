@@ -1,9 +1,12 @@
 import { useQuery } from "@tanstack/react-query"
-import { bsxService } from "services"
+import { apiClient } from "services/clients"
 
 export const useProducts = () => {
   return useQuery({
-    queryFn: () => bsxService.fetchProducts(),
-    queryKey: ["bsxService.fetchProducts"],
+    queryFn: async () => {
+      const response = await apiClient.get<{ products: Product[] }>("/api/products")
+      return response.data?.products
+    },
+    queryKey: ["products"],
   })
 }
