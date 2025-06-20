@@ -1,2 +1,3 @@
 export { default as Orderbook } from "./Orderbook"
-export { default as OrderItem, OrderItemDummy } from "./OrderItem"
+export { default as OrderbookFilter } from "./OrderbookFilter"
+export { default as OrderItem, OrderItemDummy, OrderItemHeader } from "./OrderItem"

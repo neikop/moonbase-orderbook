@@ -1,5 +1,5 @@
 "use client"
-import { Box, Flex, HStack, Show, Stack, Text } from "@chakra-ui/react"
+import { Box, Flex, HStack, Show, Stack, Tag, Text } from "@chakra-ui/react"
 import { Tooltip } from "components/ui/Tooltip"
 import { Order } from "hooks/useOrderBookSocket"
 import React, { useState } from "react"
@@ -24,7 +24,7 @@ const OrderItem = React.memo((props: Props) => {
         onMouseEnter: () => setIsHover(true),
         onMouseLeave: () => setIsHover(false),
       })}
-      h={6}
+      minH={6}
       position="relative"
       pr={2}
     >
@@ -98,13 +98,36 @@ const OrderItemInfo = React.memo((item: Props) => {
 
 export const OrderItemDummy = React.memo(({ price, priceIncrement, size, sizeIncrement }: Partial<Props>) => {
   return (
-    <HStack backgroundColor="gray.100" h={6} pr={2}>
+    <HStack backgroundColor="gray.100" minH={6} pr={2}>
       <Text flex={2} fontFamily="monospace" fontSize="xs" textAlign="center">
         {price ? formatPriceWithIncrement(price, priceIncrement) : "-"}
       </Text>
       <Text flex={1} fontFamily="monospace" fontSize="xs" textAlign="right">
         {size ? formatPriceWithIncrement(size, sizeIncrement) : "-"}
       </Text>
+    </HStack>
+  )
+})
+
+export const OrderItemHeader = React.memo(({ symbol, unit = "USDC" }: { symbol?: string; unit?: string }) => {
+  return (
+    <HStack backgroundColor="gray.50" h={8} px={1}>
+      <HStack flex={2} justifyContent="center">
+        <Text color="textSecondary" fontSize="xs" fontWeight="semibold">
+          Price
+        </Text>
+        <Tag.Root backgroundColor="white">
+          <Tag.Label>{unit}</Tag.Label>
+        </Tag.Root>
+      </HStack>
+      <HStack flex={1} justifyContent="right">
+        <Text color="textSecondary" fontSize="xs" fontWeight="semibold">
+          Size
+        </Text>
+        <Tag.Root backgroundColor="white">
+          <Tag.Label>{symbol}</Tag.Label>
+        </Tag.Root>
+      </HStack>
     </HStack>
   )
 })

@@ -1,13 +1,15 @@
 "use client"
-import { HStack, Stack, Tag, Text } from "@chakra-ui/react"
-import { OrderItem, OrderItemDummy } from "components/Orderbook"
+import { Show, Stack } from "@chakra-ui/react"
+import { OrderbookFilter, OrderItem, OrderItemDummy, OrderItemHeader } from "components/Orderbook"
 import { useOrderBookSocket } from "hooks/useOrderBookSocket"
 import { useMemo } from "react"
+import { useOrderbookStore } from "store/orderbookStore"
 import { useProductStore } from "store/productStore"
 
 const Orderbook = () => {
   const { data, isLoading } = useOrderBookSocket()
   const { product } = useProductStore()
+  const { orderType } = useOrderbookStore()
 
   const middleOrder = useMemo(() => {
     const mimAsk = data.asks.slice(-1)[0]
@@ -22,63 +24,57 @@ const Orderbook = () => {
   const cumulativeBidSize = data.bids.slice(-1)[0].cumulativeSize
 
   return (
-    <Stack gap={1}>
-      <HStack backgroundColor="gray.50" h={8} px={1}>
-        <HStack flex={2} justifyContent="center">
-          <Text color="textSecondary" fontSize="xs" fontWeight="semibold">
-            Price
-          </Text>
-          <Tag.Root backgroundColor="white">
-            <Tag.Label>USDC</Tag.Label>
-          </Tag.Root>
-        </HStack>
-        <HStack flex={1} justifyContent="right">
-          <Text color="textSecondary" fontSize="xs" fontWeight="semibold">
-            Size
-          </Text>
-          <Tag.Root backgroundColor="white">
-            <Tag.Label>{product?.base_asset_symbol}</Tag.Label>
-          </Tag.Root>
-        </HStack>
-      </HStack>
-      <Stack gap={0.5}>
-        <Stack gap={0.5} overflowY="hidden">
-          {data.asks.map((item, index) => {
-            return (
-              <OrderItem
-                isAsk={true}
-                isLoading={isLoading}
-                key={index}
-                maxSize={cumulativeAskSize}
-                priceIncrement={product?.quote_increment}
-                sizeIncrement={product?.base_increment}
-                {...item}
-              />
-            )
-          })}
-        </Stack>
+    <Stack gap={2} h={600}>
+      <OrderbookFilter />
 
-        <OrderItemDummy
-          price={middleOrder.price}
-          priceIncrement={product?.quote_increment}
-          size={middleOrder.gap}
-          sizeIncrement={product?.quote_increment}
-        />
+      <Stack flex={1} gap={1} minH={0}>
+        <OrderItemHeader symbol={product?.base_asset_symbol} />
 
-        <Stack gap={1} overflowY="hidden">
-          {data.bids.map((item, index) => {
-            return (
-              <OrderItem
-                isAsk={false}
-                isLoading={isLoading}
-                key={index}
-                maxSize={cumulativeBidSize}
-                priceIncrement={product?.quote_increment}
-                sizeIncrement={product?.base_increment}
-                {...item}
-              />
-            )
-          })}
+        <Stack flex={1} gap={0.5} minH={0}>
+          <Show when={orderType === "full" || orderType === "ask"}>
+            <Stack flex={1} gap={0.5} justifyContent="flex-end" minH={0} overflowY="hidden">
+              {data.asks.map((item, index) => {
+                return (
+                  <OrderItem
+                    isAsk={true}
+                    isLoading={isLoading}
+                    key={index}
+                    maxSize={cumulativeAskSize}
+                    priceIncrement={product?.quote_increment}
+                    sizeIncrement={product?.base_increment}
+                    {...item}
+                  />
+                )
+              })}
+            </Stack>
+          </Show>
+
+          <Show when={orderType === "full"}>
+            <OrderItemDummy
+              price={middleOrder.price}
+              priceIncrement={product?.quote_increment}
+              size={middleOrder.gap}
+              sizeIncrement={product?.quote_increment}
+            />
+          </Show>
+
+          <Show when={orderType === "full" || orderType === "bid"}>
+            <Stack flex={1} gap={0.5} minH={0} overflowY="hidden">
+              {data.bids.map((item, index) => {
+                return (
+                  <OrderItem
+                    isAsk={false}
+                    isLoading={isLoading}
+                    key={index}
+                    maxSize={cumulativeBidSize}
+                    priceIncrement={product?.quote_increment}
+                    sizeIncrement={product?.base_increment}
+                    {...item}
+                  />
+                )
+              })}
+            </Stack>
+          </Show>
         </Stack>
       </Stack>
     </Stack>
