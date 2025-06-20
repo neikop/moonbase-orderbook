@@ -11,17 +11,20 @@ const Orderbook = () => {
   const { product } = useProductStore()
   const { orderType } = useOrderbookStore()
 
-  const middleOrder = useMemo(() => {
-    const mimAsk = data.asks.slice(-1)[0]
+  const middleOrder = useMemo<{ gap: number; price: number }>(() => {
+    if (data.asks.length === 0 || data.bids.length === 0) {
+      return { gap: 0, price: 0 }
+    }
+    const minAsk = data.asks.slice(-1)[0]
     const maxBid = data.bids[0]
     return {
-      gap: mimAsk.price - maxBid.price,
-      price: (mimAsk.price + maxBid.price) / 2,
+      gap: minAsk.price - maxBid.price,
+      price: (minAsk.price + maxBid.price) / 2,
     }
   }, [data])
 
-  const cumulativeAskSize = data.asks[0].cumulativeSize
-  const cumulativeBidSize = data.bids.slice(-1)[0].cumulativeSize
+  const cumulativeAskSize = data.asks[0]?.cumulativeSize ?? 0
+  const cumulativeBidSize = data.bids.slice(-1)[0]?.cumulativeSize ?? 0
 
   return (
     <Stack gap={2} h={600}>

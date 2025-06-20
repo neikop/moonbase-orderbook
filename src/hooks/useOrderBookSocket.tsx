@@ -25,8 +25,6 @@ type OrderBookState = {
 }
 type RawOrder = [string, string]
 
-export const orderbookSize = 10
-
 export const useOrderBookSocket = () => {
   const { product } = useProductStore()
 
@@ -97,22 +95,21 @@ const normalizeOrderState = ({ asks, bids }: OrderBookState) => {
 }
 
 const normalizeOrderData = ({ asks, bids }: OrderBookState): { asks: Order[]; bids: Order[] } => {
-  const emptyOrders = Array.from({ length: orderbookSize })
-  const normalizeAsks: Order[] = emptyOrders
-    .map((_, index) => ({
+  const normalizeAsks: Order[] = asks
+    .map((item) => ({
       cumulativePrice: 0,
       cumulativeSize: 0,
-      price: Number(asks[index]?.[0] ?? 0),
-      size: Number(asks[index]?.[1] ?? 0),
+      price: Number(item[0] ?? 0),
+      size: Number(item[1] ?? 0),
     }))
     .map(calculateAccumulate)
 
-  const normalizeBids = emptyOrders
-    .map((_, index) => ({
+  const normalizeBids = bids
+    .map((item) => ({
       cumulativePrice: 0,
       cumulativeSize: 0,
-      price: Number(bids[index]?.[0] ?? 0),
-      size: Number(bids[index]?.[1] ?? 0),
+      price: Number(item[0] ?? 0),
+      size: Number(item[1] ?? 0),
     }))
     .map(calculateAccumulate)
 
