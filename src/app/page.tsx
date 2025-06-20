@@ -3,10 +3,20 @@ import { Box, Grid, HStack, Stack, StackSeparator, Text } from "@chakra-ui/react
 import { Orderbook } from "components/Orderbook"
 import { ProductInfo } from "components/ProductInfo"
 import { ProductSelectDialog } from "components/ProductSelectDialog"
+import { useProducts } from "hooks/useProducts"
+import { useEffect } from "react"
 import { useProductStore } from "store/productStore"
 
 const Home = () => {
   const { product, setProduct } = useProductStore()
+
+  const { data: products } = useProducts()
+
+  useEffect(() => {
+    if (!product?.product_id && products?.[0]) {
+      setProduct(products?.[0])
+    }
+  }, [setProduct, products, product?.product_id])
 
   return (
     <Stack flex={1} gap={0} separator={<StackSeparator />}>
