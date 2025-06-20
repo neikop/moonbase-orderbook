@@ -15,7 +15,7 @@ const Orderbook = () => {
     if (data.asks.length === 0 || data.bids.length === 0) {
       return { gap: 0, price: 0 }
     }
-    const minAsk = data.asks.slice(-1)[0]
+    const minAsk = data.asks[0]
     const maxBid = data.bids[0]
     return {
       gap: minAsk.price - maxBid.price,
@@ -23,7 +23,7 @@ const Orderbook = () => {
     }
   }, [data])
 
-  const cumulativeAskSize = data.asks[0]?.cumulativeSize ?? 0
+  const cumulativeAskSize = data.asks.slice(-1)[0]?.cumulativeSize ?? 0
   const cumulativeBidSize = data.bids.slice(-1)[0]?.cumulativeSize ?? 0
 
   return (
@@ -35,7 +35,7 @@ const Orderbook = () => {
 
         <Stack flex={1} gap={0.5} minH={0}>
           <Show when={orderType === "full" || orderType === "ask"}>
-            <Stack flex={1} gap={0.5} justifyContent="flex-end" minH={0} overflowY="hidden">
+            <Stack flex={1} flexDirection="column-reverse" gap={0.5} minH={0} overflowY="hidden">
               {data.asks.map((item, index) => {
                 return (
                   <OrderItem

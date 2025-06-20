@@ -114,7 +114,7 @@ const normalizeOrderData = ({ asks, bids }: OrderBookState): { asks: Order[]; bi
     .map(calculateAccumulate)
 
   return {
-    asks: normalizeAsks.reverse(),
+    asks: normalizeAsks,
     bids: normalizeBids,
   }
 }
