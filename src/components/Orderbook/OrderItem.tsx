@@ -47,7 +47,7 @@ const OrderItem = React.memo((props: Props) => {
             h="full"
             left={0}
             position="absolute"
-            transition="width 0.5s ease-in-out"
+            transition="width 0.3s ease-in-out"
             width={`${(size / maxSize) * 100}%`}
           />
         </Flex>
@@ -57,7 +57,7 @@ const OrderItem = React.memo((props: Props) => {
           h="full"
           left={0}
           position="absolute"
-          transition="width 0.5s ease-in-out"
+          transition="width 0.3s ease-in-out"
           width={`${(cumulativeSize / maxSize) * 100}%`}
         />
       </Show>
