@@ -51,7 +51,7 @@ const Home = () => {
           display: "flex",
         }}
       >
-        <Box backgroundColor="red.50" borderRightWidth={1} gridArea="trading-view" mdDown={{ display: "none" }}>
+        <Box borderRightWidth={1} gridArea="trading-view" mdDown={{ display: "none" }}>
           <Box p={2}>
             <Text color="textSecondary">Trading View</Text>
           </Box>
@@ -59,12 +59,12 @@ const Home = () => {
         <Box gridArea="orderbook" mdDown={{ flex: 1 }} p={2}>
           <Orderbook />
         </Box>
-        <Box backgroundColor="green.50" borderLeftWidth={1} gridArea="trade-box" mdDown={{ display: "none" }}>
+        <Box borderLeftWidth={1} gridArea="trade-box" mdDown={{ display: "none" }}>
           <Box p={2}>
             <Text color="textSecondary">Trade Box</Text>
           </Box>
         </Box>
-        <Box backgroundColor="blue.50" borderTopWidth={1} gridArea="history-card" mdDown={{ display: "none" }}>
+        <Box borderTopWidth={1} gridArea="history-card" mdDown={{ display: "none" }}>
           <Box p={2}>
             <Text color="textSecondary">History Card</Text>
           </Box>
