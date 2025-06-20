@@ -61,7 +61,7 @@ const ProductSelectDialog = ({ buttonProps, onChange, value }: Props) => {
       <Portal>
         <Dialog.Backdrop />
         <Dialog.Positioner>
-          <Dialog.Content overflow="hidden">
+          <Dialog.Content mx={2} overflow="hidden">
             <Dialog.Header borderBottomWidth={1}>
               <Input
                 onChange={(event) => setSearchText(event.target.value)}
